@@ -1,0 +1,5 @@
+.security/*
+localhost*
+/node_modules
+apikey.js
+index.html
