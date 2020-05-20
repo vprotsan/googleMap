@@ -157,6 +157,37 @@
 //   // });
 // }
 
+const createMap = ({ lat, lng }) => {
+  return new google.maps.Map(document.getElementById('map'), {
+    center: { lat, lng },
+    zoom: 15,
+    styles: mapStyles
+  });
+};
+
+const createMarker = ({ map, position, icon }) => {
+  return new google.maps.Marker({ map, position, icon });
+};
+
+// const getCurrentPosition = ({ onSuccess, onError = () => { } }) => {
+//   if ('geolocation' in navigator === false) {
+//     return onError(new Error('Geolocation is not supported by your browser.'));
+//   }
+//
+//   return navigator.geolocation.getCurrentPosition(onSuccess, onError);
+// };
+
+// New function to track user's location.
+const trackLocation = ({ onSuccess, onError = () => { } }) => {
+  if ('geolocation' in navigator === false) {
+    return onError(new Error('Geolocation is not supported by your browser.'));
+  }
+
+  // Use watchPosition instead.
+  return navigator.geolocation.watchPosition(onSuccess, onError);
+};
+
+
 const getPositionErrorMessage = code => {
   switch (code) {
     case 1:
@@ -176,36 +207,26 @@ function init() {
   let driverPosition = { lat: 30.319223, lng: -81.460903 }
   let storePosition = { lat: 30.317219, lng: -81.477174 }
 
-  const map = new google.maps.Map(document.getElementById('map'), {
-    center: custPosition,
-    zoom: 15,
-    styles: mapStyles
-  });
-
-  let custMarker = new google.maps.Marker({ map, position: custPosition, icon: 'https://maps.google.com/mapfiles/kml/pal3/icon23.png' });
-  let driverMarker = new google.maps.Marker({ map, position: driverPosition, icon: 'https://maps.google.com/mapfiles/dir_0.png' });
-  let storeMarker = new google.maps.Marker({ map, position: storePosition, icon: 'https://maps.google.com/mapfiles/kml/pushpin/wht-pushpin.png' });
+  // here is standart collection of deliveryCoordinates
+  // http://kml4earth.appspot.com/icons.html
+  const map = createMap(custPosition);
+  let custMarker = createMarker({ map, position: custPosition, icon: 'https://maps.google.com/mapfiles/kml/pal3/icon23.png' });
+  let driverMarker = createMarker({ map, position: driverPosition, icon: 'http://maps.google.com/mapfiles/kml/pal4/icon54.png' });
+  let storeMarker = createMarker({ map, position: storePosition, icon: 'http://maps.google.com/mapfiles/kml/pal4/icon21.png' });
 
   // Get user's location
-  if ('geolocation' in navigator) {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        console.log(`Lat: ${position.coords.latitude} Lng: ${position.coords.longitude}`)
-        // Set marker's position.
-        custMarker.setPosition({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        });
-      },
-      err => alert(`Error (${err.code}): ${err.message}`)
-    );
-  } else {
-    alert('Geolocation is not supported by your browser.');
-  }
+  trackLocation({
+    onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {
+      custMarker.setPosition({ lat, lng });
+      map.panTo({ lat, lng });
+    },
+    onError: err =>
+      alert(`Error: ${getPositionErrorMessage(err.code) || err.message}`)
+  });
 }
 
 
-
+//map styles
 const mapStyles = [
       { elementType: 'geometry', stylers: [{color: '#242f3e'}]},
       {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'},{visibility: 'off'}]},
