@@ -171,14 +171,17 @@
 
 
 function init() {
-  new google.maps.Map(document.getElementById('map'), {
-    center: { lat: 30.314797, lng: -81.464557 },
+
+  let custPosition = { lat: 30.314797, lng: -81.464557 }
+
+  const map = new google.maps.Map(document.getElementById('map'), {
+    center: custPosition,
     zoom: 15,
     styles: mapStyles
   });
-}
 
-// 30.314797, -81.464557
+  const marker = new google.maps.Marker({ map, position: custPosition, icon: 'https://maps.google.com/mapfiles/kml/pal3/icon23.png' });
+}
 
 
 
