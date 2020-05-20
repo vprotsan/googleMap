@@ -116,18 +116,6 @@
 // //   return navigator.geolocation.getCurrentPosition(onSuccess, onError);
 // // };
 //
-// const getPositionErrorMessage = code => {
-//   switch (code) {
-//     case 1:
-//       return 'Permission denied.';
-//     case 2:
-//       return 'Position unavailable.';
-//     case 3:
-//       return 'Timeout reached.';
-//     default:
-//       return null;
-//   }
-// }
 //
 // function init() {
 //   // let deliveryCoordinates = []
@@ -169,6 +157,18 @@
 //   // });
 // }
 
+const getPositionErrorMessage = code => {
+  switch (code) {
+    case 1:
+      return 'Permission denied.';
+    case 2:
+      return 'Position unavailable.';
+    case 3:
+      return 'Timeout reached.';
+    default:
+      return null;
+  }
+}
 
 function init() {
 
@@ -185,6 +185,23 @@ function init() {
   let custMarker = new google.maps.Marker({ map, position: custPosition, icon: 'https://maps.google.com/mapfiles/kml/pal3/icon23.png' });
   let driverMarker = new google.maps.Marker({ map, position: driverPosition, icon: 'https://maps.google.com/mapfiles/dir_0.png' });
   let storeMarker = new google.maps.Marker({ map, position: storePosition, icon: 'https://maps.google.com/mapfiles/kml/pushpin/wht-pushpin.png' });
+
+  // Get user's location
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        console.log(`Lat: ${position.coords.latitude} Lng: ${position.coords.longitude}`)
+        // Set marker's position.
+        custMarker.setPosition({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+      },
+      err => alert(`Error (${err.code}): ${err.message}`)
+    );
+  } else {
+    alert('Geolocation is not supported by your browser.');
+  }
 }
 
 
