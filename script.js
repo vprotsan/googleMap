@@ -173,6 +173,8 @@
 function init() {
 
   let custPosition = { lat: 30.314797, lng: -81.464557 }
+  let driverPosition = { lat: 30.319223, lng: -81.460903 }
+  let storePosition = { lat: 30.317219, lng: -81.477174 }
 
   const map = new google.maps.Map(document.getElementById('map'), {
     center: custPosition,
@@ -180,7 +182,9 @@ function init() {
     styles: mapStyles
   });
 
-  const marker = new google.maps.Marker({ map, position: custPosition, icon: 'https://maps.google.com/mapfiles/kml/pal3/icon23.png' });
+  let custMarker = new google.maps.Marker({ map, position: custPosition, icon: 'https://maps.google.com/mapfiles/kml/pal3/icon23.png' });
+  let driverMarker = new google.maps.Marker({ map, position: driverPosition, icon: 'https://maps.google.com/mapfiles/dir_0.png' });
+  let storeMarker = new google.maps.Marker({ map, position: storePosition, icon: 'https://maps.google.com/mapfiles/kml/pushpin/wht-pushpin.png' });
 }
 
 
